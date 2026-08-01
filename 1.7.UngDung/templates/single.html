@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Lung Cancer Prediction System</title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@400;600;700&display=swap" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	
+	<style>
+	body{
+		font-family:"Segoe UI", Roboto, sans-serif;
+		background:#dbe7ee;
+	}
+
+	.container-box{
+		max-width:1200px;
+		margin:25px auto;
+		background:#97b7e1;
+		padding:35px;
+		border-radius:8px;
+		box-shadow:0 8px 25px rgba(0,0,0,0.06);
+	}
+
+	.header-title{
+		text-align:center;
+		font-family:'Rokkitt',serif;
+		font-weight:800;
+		font-size:40px;
+		color:#190981;
+	}
+
+	.header-sub{
+		text-align:center;
+		font-size:18px;
+		font-weight:500;
+		margin-bottom:20px;
+	}
+
+	.feature-box{
+		background:#f8fafc;
+		padding:18px;
+		border-radius:6px;
+		margin-bottom:20px;
+		border:1px solid #e2e8f0;
+	}
+
+	.feature-title{
+		font-weight:700;
+		font-size:16px;
+		margin-bottom:15px;
+		color:#0d3b66;
+	}
+
+	.form-label{
+		font-size:12px;
+		font-weight:600;
+		letter-spacing:0.3px;
+	}
+
+	.support-toggle{
+		background:#edf2f7;
+		padding:10px 15px;
+		border-radius:5px;
+		border:1px solid #d1d5db;
+	}
+
+	.btn-primary{
+		background:#0d3b66;
+		border:none;
+	}
+
+	.btn-primary:hover{
+		background:#092c4c;
+	}
+
+	.result-box{
+		background:#f8fafc;
+		padding:20px;
+		border-radius:6px;
+		margin-top:20px;
+		text-align:center;
+	}
+
+	.result-ellipse{
+		margin-top:25px;
+		padding:30px 50px;
+		text-align:center;
+		border-radius:999px;
+		font-size:24px;
+		font-weight:700;
+		color:white;
+		width:250px;
+		margin-left:auto;
+		margin-right:auto;
+	}
+
+	.result-red{
+		background:#d62828;
+	}
+
+	.result-green{
+		background:#2a9d8f;
+	}
+
+	.result-ellipse{
+		transition:0.3s;
+	}
+
+	.result-ellipse:hover{
+		transform:scale(1.05);
+	}
+	
+	#featureContainer{
+		justify-content:center;
+	}
+	
+	#importanceChart{
+		max-height:300px;
+	}
+	
+	</style>
+</head>
+
+<body>
+	<div class="container-box">
+		<div class="header-title">
+			Lung Cancer Prediction System
+		</div>
+		<hr style="border:1.5px solid black">
+		<form action="{{ url_for('predict') }}" method="post">
+
+			<!-- MODEL -->
+			<div class="header-sub">
+				Machine Learning Model:
+				<select class="form-select d-inline-block"
+					id="modelSelect"
+					name="model"
+					style="width:300px">
+					<option selected disabled>Choose a machine learning model</option>
+					<option value="catboost" {{'selected' if model=='catboost' else ''}}>CatBoost</option>
+					<option value="randomforest" {{'selected' if model=='randomforest' else ''}}>Random Forest</option>
+					<option value="bagging" {{'selected' if model=='bagging' else ''}}>Bagging Decision Tree</option>
+				</select>
+			</div>
+
+
+			<!-- INPUT FORM -->
+			<div id="inputForm"
+			{% if prediction %}style="display:block"{% else %}style="display:none"{% endif %}>
+
+				<!-- PATIENT INFO -->
+				<div class="row mb-3 align-items-end">
+					<div class="col-md-6">
+						<label class="form-label">PATIENT NAME</label>
+						<input type="text"
+							   class="form-control"
+							   name="patient_name"
+							   placeholder="Enter patient name"
+							   value="{{ patient_name if patient_name else '' }}">
+					</div>
+
+					<div class="col-md-6 text-end">
+						<button type="submit" class="btn btn-primary px-4 me-2">
+							Run Prediction
+						</button>
+
+						<button type="button" class="btn btn-secondary px-4" onclick="resetForm()">Reset</button>
+					</div>
+				</div>
+
+				<!-- FEATURES -->
+				<div class="feature-box">
+					<div class="feature-title">Patient Features</div>
+					<div class="row g-3" id="featureContainer"></div>
+				</div>
+
+				<hr style="border:1.5px solid black;margin-top:20px;">
+
+				{% if prediction %}
+
+				<div class="row mt-4">
+
+					<!-- RESULT BOX -->
+					<div class="col-md-4">
+						<div class="result-box">
+
+							{% if prediction == "Lung Cancer" %}
+
+							<div class="result-ellipse result-red">
+								Lung Cancer
+							</div>
+
+							{% else %}
+
+							<div class="result-ellipse result-green">
+								No Lung Cancer
+							</div>
+
+							{% endif %}
+
+							{% if risk_level %}
+							<div style="margin-top:15px;font-size:20px;font-weight:700;">
+								Risk Level:
+
+								{% if risk_level == "High Risk" %}
+								<span class="badge bg-danger fs-5">High Risk</span>
+
+								{% elif risk_level == "Moderate Risk" %}
+								<span class="badge bg-warning text-dark fs-5">Moderate Risk</span>
+
+								{% elif risk_level == "Low Risk" %}
+								<span class="badge bg-success fs-5">Low Risk</span>
+								{% endif %}
+
+							</div>
+							{% endif %}
+
+						</div>
+					</div>
+
+
+					<!-- CHART -->
+					<div class="col-md-8">
+
+						<div class="feature-box" id="chartBox">
+
+							<div style="font-size:20px;font-weight:700;margin-bottom:10px;">
+								Top 10 Feature Contributions
+							</div>
+
+							{% if feature_importance %}
+							<canvas id="importanceChart"></canvas>
+							{% else %}
+							<p style="color:#666">No feature importance available</p>
+							{% endif %}
+
+						</div>
+
+					</div>
+
+				</div>
+
+				{% endif %}
+
+			</div>
+		</form>
+	</div>
+
+
+
+	<script>
+		const formData = {{ form_data | tojson if form_data else '{}' }};
+		
+		let chartInstance = null;
+		
+		const allFeatures = [
+			"age",
+			"gender",
+			"smoking",
+			"finger_discoloration",
+			"mental_stress",
+			"long_term_illness",
+			"immune_weakness",
+			"alcohol_consumption",
+			"energy_level",
+			"oxygen_saturation",
+			"chest_tightness",
+			"breathing_issue",
+			"throat_discomfort",
+			"exposure_to_pollution",
+			"family_history",
+			"smoking_family_history",
+			"stress_immune"
+		]
+
+
+
+		function createField(name, index){
+			let label = name.replaceAll("_"," ").toUpperCase()
+			let colClass="col-md-2"
+
+			if(index>=10 && index<=13){
+				colClass="col-md-3"
+			}
+
+			if(index>=14){
+				colClass="col-md-4"
+			}
+
+			let html=""
+
+			if(name==="age"){
+				html=`
+				<div class="${colClass}">
+					<label class="form-label">${label}</label>
+					<input type="number" class="form-control" name="${name}" value="${formData[name] ?? ''}">
+				</div>`
+			}
+
+			else if(name==="oxygen_saturation"){
+				html=`
+				<div class="${colClass}">
+					<label class="form-label">${label}</label>
+					<input type="number"
+						step="0.01"
+						min="80"
+						max="100"
+						value="${formData[name] ?? '94'}"
+						class="form-control"
+						name="${name}">
+				</div>`
+			}
+
+			else if(name==="energy_level"){
+				html=`
+				<div class="${colClass}">
+					<label class="form-label">${label}</label>
+					<input type="number"
+						step="0.01"
+						min="0"
+						max="100"
+						value="${formData[name] ?? '50'}"
+						class="form-control"
+						name="${name}">
+				</div>`
+			}
+
+			else if(name==="gender"){
+				html=`
+				<div class="${colClass}">
+					<label class="form-label">${label}</label>
+					<select class="form-select" name="${name}">
+						<option value="">Choose</option>
+						<option value="1" ${formData[name]=="1"?"selected":""}>Nam</option>
+						<option value="0" ${formData[name]=="0"?"selected":""}>Nữ</option>
+					</select>
+				</div>`
+			}
+
+			else{
+				html=`
+				<div class="${colClass}">
+					<label class="form-label">${label}</label>
+					<select class="form-select" name="${name}">
+						<option value="">Choose</option>
+						<option value="1" ${formData[name]=="1"?"selected":""}>Có</option>
+						<option value="0" ${formData[name]=="0"?"selected":""}>Không</option>
+					</select>
+				</div>`
+			}
+
+			return html
+		}
+
+		document.getElementById("modelSelect").addEventListener("change",function(){
+
+			document.getElementById("inputForm").style.display="block"
+
+			const container=document.getElementById("featureContainer")
+
+			if(container.innerHTML===""){
+				allFeatures.forEach((f,i)=>{
+					container.innerHTML+=createField(f,i)
+				})
+			}
+		})
+		
+		window.onload=function(){
+
+			const container=document.getElementById("featureContainer")
+
+			if(container.innerHTML===""){
+				allFeatures.forEach((f,i)=>{
+					container.innerHTML+=createField(f,i)
+				})
+			}
+			document.getElementById("inputForm").style.display="block"
+		}
+		
+		function resetForm(){
+			const modelSelect = document.getElementById("modelSelect")
+			modelSelect.selectedIndex = 0
+		
+			document.getElementById("inputForm").style.display="block"
+			
+			// reset patient name
+			document.querySelector("input[name='patient_name']").value=""
+
+			// reset inputs
+			const inputs=document.querySelectorAll("#featureContainer input")
+			inputs.forEach(i=>{
+				i.value=""
+			})
+
+			// reset selects
+			const selects=document.querySelectorAll("#featureContainer select")
+			selects.forEach(s=>{
+				s.selectedIndex=0
+			})
+
+			// ẩn kết quả prediction
+			const resultBox = document.querySelector(".result-box")
+			if(resultBox){
+				resultBox.remove()
+			}
+			
+			if(chartInstance){
+				chartInstance.destroy()
+				chartInstance = null
+			}
+
+			const chartCanvas = document.getElementById("importanceChart")
+			if(chartCanvas){
+				chartCanvas.remove()
+			}
+			
+			const chartContainer = document.querySelector("#importanceChart")?.parentElement
+			if(chartContainer){
+				chartContainer.innerHTML = "<p style='color:#666'>No feature importance available</p>"
+			}
+			
+			const chartBox = document.getElementById("chartBox")
+			if(chartBox){
+				chartBox.style.display = "none"
+			}
+		}
+		
+		{% if feature_importance %}
+
+			const featureData = {{ feature_importance | tojson }};
+
+			const entries = Object.entries(featureData);
+
+			// sort giảm dần theo importance
+			entries.sort((a,b)=>b[1]-a[1]);
+
+			const labels = entries.map(e =>
+				e[0].replaceAll("_"," ").toUpperCase()
+			);
+
+			const values = entries.map(e => e[1]);
+
+			const ctx = document.getElementById("importanceChart");
+
+			chartInstance = new Chart(ctx,{
+				type:'bar',
+				data:{
+					labels:labels,
+					datasets:[{
+						label:'Feature Importance',
+						data:values,
+						backgroundColor:"#0d3b66",
+						borderRadius:6
+					}]
+				},
+				options:{
+					responsive:true,
+					plugins:{
+						legend:{display:false}
+					},
+					scales:{
+						y:{beginAtZero:true}
+					}
+				}
+			});
+
+			{% endif %}
+	</script>
+</body>
+</html>
