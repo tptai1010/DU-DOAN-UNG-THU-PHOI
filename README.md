@@ -7,7 +7,7 @@
 
 * Mô tả:
   - Nghiên cứu triển khai các mô hình: AdaBoost, CatBoost, XGBoost, K-NN, Decision Tree, Random Forest, Bagging DT, SVM và MLP.
-  - Dữ liệu được sử dụng gồm có 5000 mẫu với 17 đặc trưng đầu vào và 1 nhãn mục tiêu (YES/NO) được lấy từ các nền tảng dữ liệu y khoa Kaggle/UCI.
+  - Dữ liệu gồm có 5000 mẫu với 17 đặc trưng đầu vào và 1 nhãn mục tiêu (YES/NO) từ nền tảng dữ liệu y khoa Kaggle/UCI.
   - Thực hiện các kỹ thuật tiền xử lý dữ liệu.
   - Chọn tham số tối ưu.
   - So sánh & đánh giá: Accuracy, Recall, Precision, F1-Score và AUC-ROC.
