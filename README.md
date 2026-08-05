@@ -23,8 +23,9 @@
     + Công cụ: Visual Studio Code, Notepad ++.
     + Ngôn ngữ lập trình: Python.
     + Giao diện người dùng: HTML, CSS và JavaScript.
-    + Framework: Flask.
+    + Flask Web.
   - Mobile app:
     + Công cụ: Android Studio, Visual Studio Code.
     + Ngôn ngữ lập trình: Dart, Python.
-    + Framework: Flutter, Flask.
+    + Framework: Flutte.
+    + RESTful API.
