@@ -9,8 +9,12 @@
   - Nghiên cứu triển khai các mô hình: AdaBoost, CatBoost, XGBoost, K-NN, Decision Tree, Random Forest, Bagging DT, SVM và MLP.
   - Dữ liệu gồm có 5000 mẫu với 17 đặc trưng đầu vào và 1 nhãn mục tiêu (YES/NO) từ nền tảng dữ liệu y khoa Kaggle/UCI.
   - Thực hiện các kỹ thuật tiền xử lý dữ liệu.
-  - Chọn tham số tối ưu.
-  - So sánh & đánh giá: Accuracy, Recall, Precision, F1-Score và AUC-ROC.
+    + Làm sạch tên cột.
+    + Xử lý giá trị thiếu bằng Mode và Median
+    + Mã hóa biến mục tiêu.
+    + Chuẩn hóa thuộc tính số bằng StandardScaler.
+  - Tinh chỉnh siêu tham số bằng GridSearch.
+  - So sánh & đánh giá: Accuracy (>87%), Recall, Precision, F1-Score và AUC-ROC (>0.8).
   - Trích chọn đặc trưng.
   - Kết quả: CatBoost, Random Forest và Bagging DT cho hiệu suất cao nhất.
   - Xây dựng hệ thống dự đoán Website và Mobile app. 
