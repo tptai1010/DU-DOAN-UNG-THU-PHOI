@@ -6,7 +6,7 @@
 * Lĩnh vực: Machine learning.
 
 * Mô tả:
-  - Khảo sát bài toán nghiệp vụ trong lĩnh vực Y tế công cộng; thu thập và làm rõ yêu cầu nghiệp vụ cho hệ thống hỗ trợ chẩn đoán.
+  - Khảo sát bài toán nghiệp vụ trong lĩnh vực Y tế công cộng; thu thập và làm rõ yêu cầu nghiệp vụ cho hệ thống hỗ trợ chẩn đoán. Xác định đầu ra và các mô hình phù hợp.
   - Nghiên cứu triển khai các mô hình: AdaBoost, CatBoost, XGBoost, K-NN, Decision Tree, Random Forest, Bagging DT, SVM và MLP.
   - Dữ liệu gồm có 5000 mẫu với 17 đặc trưng đầu vào và 1 nhãn mục tiêu (YES/NO) từ nền tảng dữ liệu y khoa Kaggle/UCI.
   - Thực hiện các kỹ thuật tiền xử lý dữ liệu.
