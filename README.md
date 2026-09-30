@@ -16,6 +16,14 @@
     + Chuẩn hóa thuộc tính số bằng StandardScaler.
   - Tinh chỉnh siêu tham số bằng GridSearch.
   - So sánh & đánh giá: Accuracy (>87%), Recall, Precision, F1-Score và AUC-ROC (>0.8).
+    +  So sánh tổng thể các mô hình.
+      
+      <img width="845" height="559" alt="image" src="https://github.com/user-attachments/assets/138af7fd-1777-4859-a3a2-2175db8ab03e" />
+
+    +  Biểu đồ ROC-AUC
+      
+      ![Uploading image.png…]()
+
   - Trích chọn đặc trưng.
   - Kết quả: CatBoost, Random Forest và Bagging DT cho hiệu suất cao nhất.
   - Xây dựng hệ thống dự đoán Website và Mobile app. 
