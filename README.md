@@ -22,7 +22,7 @@
 
     +  Biểu đồ ROC-AUC
       
-      ![Uploading image.png…]()
+      <img width="856" height="693" alt="image" src="https://github.com/user-attachments/assets/1e0ff7b7-2dcb-4c5e-ba98-c5d3ea139f55" />
 
   - Trích chọn đặc trưng.
   - Kết quả: CatBoost, Random Forest và Bagging DT cho hiệu suất cao nhất.
